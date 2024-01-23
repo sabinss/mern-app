@@ -1,4 +1,8 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npm run lint
+# npm run lint
+# npm run format:fix
+
+# this will run lint-staged pacakge and it goes to package.json and read lint-staged configuration 
+npx lint-staged
