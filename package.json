@@ -1,0 +1,25 @@
+{
+    "name": "auth-service",
+    "version": "1.0.0",
+    "description": "A user management service",
+    "main": "index.js",
+    "scripts": {
+        "format:check": "prettier . --check",
+        "format:fix": "prettier . --write",
+        "lint:fix": "eslint . --fix",
+        "lint": "eslint .",
+        "prepare": "husky install"
+    },
+    "author": "Sabin S <sabinshrestha292@gmail..com>",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/node": "^20.11.5",
+        "@typescript-eslint/eslint-plugin": "^6.19.1",
+        "@typescript-eslint/parser": "^6.19.1",
+        "eslint": "^8.56.0",
+        "eslint-config-prettier": "^9.1.0",
+        "husky": "^8.0.3",
+        "prettier": "3.2.4",
+        "typescript": "^5.3.3"
+    }
+}
