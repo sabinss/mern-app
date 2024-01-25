@@ -1,0 +1,49 @@
+## For gitignore file instead of creating manually use gitignore extension
+ open command pannel , type .gitignore and type node .gitignore for generating gitignore for nodejs project
+
+
+## Node version manager
+- same project is used by multiple developer, I want all uses same nodejs version
+- install nvm
+- nvm ls 
+
+
+## setup typescript
+1 npm i -D typescript
+2. npx tsc --init : it creates tsconfig file
+3. npm install -D @types/node
+
+
+## setup prettier
+1.  npm install --save-dev --save-exact prettier: 
+- here we are using exact command because, prettier is optionated package,
+it behanves different in each version
+- so when we start developing we donot want to change prettier version, to use always same version we have used exact
+
+## Eslint
+- eslint is static code analyzer
+- it check quality of our code
+- search eslit typescript for setting up eslint
+- you need to go to prettier and check eslint vs prettier
+    sometime eslint and prettier may conflict so we need package to work both prettier and eslint properly, so use below npm package for that
+    npm install --save-dev eslint-config-prettier 
+
+
+##husky
+- it is pre commit hook help to run some script before commiting our code
+- pre commit hook will run script for all the file, it is not best way
+- we want to run precommit script only for the file that have been changed for this we will use `lint staged` package
+
+## creating teamplete 
+- creating this auth-service as template will help to create other services
+- here we will have one origin where we push our code and one origin template to push our template
+
+scenario:
+1. auth service have already one origin , now we will add template origin 
+2. first create github repo to store this auth-service as template
+3. copy remote address and type in terminal below command
+   git remote add template <github-origin-url>
+
+
+## Dockerizing Applicaiton:
+1. Read more : https://codersgyan.notion.site/Containerisation-Express-app-ecd8f3c5acf446629acdc67cff4ca55f
