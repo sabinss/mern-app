@@ -15,7 +15,5 @@ module.exports = {
     root: true,
     rules: {
         'no-console': 'error',
-        'no-unused-vars': 'off',
-        'prefer-const': 'error',
     },
 };
