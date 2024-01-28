@@ -47,3 +47,45 @@ scenario:
 
 ## Dockerizing Applicaiton:
 1. Read more : https://codersgyan.notion.site/Containerisation-Express-app-ecd8f3c5acf446629acdc67cff4ca55f
+
+Notes:
+- when we run our aplication inside node_modules .bin folder is created
+= .bin is a binary files that are created for that specifici host machined
+= this bin binaries is required to run application
+= when we run this aplication in different host different binaries are created
+
+
+## Docker command:
+1. docker build -t {name} -f docker/dev/Dockerfile .
+2. docker run --rm -it -v $(pwd):/usr/src/app -v /usr/src/app/node_modules --env-file $(pwd)/.env.dev -p 5501:5501 -e NODE_ENV=development auth-service
+
+    Certainly! Let's break down the `docker run` command with its various options and arguments:
+
+```bash
+docker run --rm -it -v $(pwd):/usr/src/app -v /usr/src/app/node_modules --env-file $(pwd)/.env.dev -p 5501:5501 -e NODE_ENV=development auth-service:dev
+```
+
+Here's a breakdown of each part:
+
+1. `docker run`: This is the command to run a Docker container.
+
+2. `--rm`: This option removes the container automatically after it exits. It helps to keep your system clean by removing the container when it's no longer needed.
+
+3. `-it`: This option combines two flags:
+   - `-i`: Keep STDIN open even if not attached.
+   - `-t`: Allocate a pseudo-TTY (text terminal). This option is often used to run the container in interactive mode.
+
+4. `-v $(pwd):/usr/src/app`: This option mounts the current working directory (`$(pwd)`) on the host machine to the `/usr/src/app` directory inside the container. This is a common practice to share code between the host and the container.
+
+5. `-v /usr/src/app/node_modules`: This option mounts the `/usr/src/app/node_modules` directory inside the container. It's a common optimization in Node.js projects to prevent overwriting the `node_modules` directory with a potentially different version from the host.
+
+6. `--env-file $(pwd)/.env`: This option specifies an environment file (`$(pwd)/.env`) to be used by the container. Environment files often contain key-value pairs for environment variables.
+
+7. `-p 5501:5501`: This option maps port 5501 from the host to port 5501 in the container. It allows you to access services running inside the container on this specified port from your host machine.
+
+8. `-e NODE_ENV=development`: This option sets the `NODE_ENV` environment variable inside the container to "development."
+
+9. `auth-prep:dev`: This is the name of the Docker image to run. It specifies the image to use and the tag (in this case, "dev").
+
+In summary, this `docker run` command is designed to start a Docker container based on the `auth-prep` image in development mode. It mounts the current working directory to `/usr/src/app` inside the container, uses an environment file for setting environment variables, and maps port 5501 between the host and the container. The container is removed automatically after it exits (`--rm`), 
+and it is run in interactive mode (`-it`).
