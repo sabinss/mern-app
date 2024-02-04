@@ -9,11 +9,13 @@ module.exports = {
     parser: '@typescript-eslint/parser',
     plugins: ['@typescript-eslint'],
     parserOptions: {
-        project: true,
+        // project: true,
         tsconfigRootDir: __dirname,
+        sourceType: 'module',
     },
     root: true,
     rules: {
         'no-console': 'error',
     },
+    // ignorePatterns: ['**/*.spec.ts'],
 };

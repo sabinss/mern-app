@@ -57,12 +57,12 @@ Notes:
 
 ## Docker command:
 1. docker build -t {name} -f docker/dev/Dockerfile .
-2. docker run --rm -it -v $(pwd):/usr/src/app -v /usr/src/app/node_modules --env-file $(pwd)/.env.dev -p 5501:5501 -e NODE_ENV=development auth-service
+2. docker run --rm -it -v $(pwd):/usr/src/app -v /usr/src/app/node_modules --env-file $(pwd)/.env.dev -p 3000:3000 -e NODE_ENV=development auth-service:dev
 
     Certainly! Let's break down the `docker run` command with its various options and arguments:
 
 ```bash
-docker run --rm -it -v $(pwd):/usr/src/app -v /usr/src/app/node_modules --env-file $(pwd)/.env.dev -p 5501:5501 -e NODE_ENV=development auth-service:dev
+docker run --rm -it -v $(pwd):/usr/src/app -v /usr/src/app/node_modules --env-file $(pwd)/.env.dev -p 3000:3000 -e NODE_ENV=development auth-service:dev
 ```
 
 Here's a breakdown of each part:
@@ -89,3 +89,7 @@ Here's a breakdown of each part:
 
 In summary, this `docker run` command is designed to start a Docker container based on the `auth-prep` image in development mode. It mounts the current working directory to `/usr/src/app` inside the container, uses an environment file for setting environment variables, and maps port 5501 between the host and the container. The container is removed automatically after it exits (`--rm`), 
 and it is run in interactive mode (`-it`).
+
+
+## Docker setup guide
+1.https://codersgyan.notion.site/Setting-up-PostgreSQL-in-a-Docker-Container-with-Persistent-Volume-58711388eb244c9fa1597d87783e3f92
