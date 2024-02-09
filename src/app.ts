@@ -7,6 +7,7 @@ import createError from 'http-errors';
 import authRouter from './routes/auth';
 
 const app = express();
+app.use(express.json());
 
 app.get('/', async (req, res, next) => {
     // when we set asyn here and when we throw error , in this case
