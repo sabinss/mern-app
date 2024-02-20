@@ -1,15 +1,15 @@
 import 'reflect-metadata';
 
-import express, { Response, Request, NextFunction } from 'express';
+import express, { Response, Request } from 'express';
 import logger from './config/logger';
 import { HttpError } from 'http-errors';
-import createError from 'http-errors';
+// import createError from 'http-errors';
 import authRouter from './routes/auth';
 
 const app = express();
 app.use(express.json());
 
-app.get('/', async (req, res, next) => {
+app.get('/', async (req, res) => {
     // when we set asyn here and when we throw error , in this case
     // global error canot cath in this case
     // const err = createError(401, 'Please login to view this page.');
@@ -23,7 +23,7 @@ app.get('/', async (req, res, next) => {
 app.use('/auth', authRouter);
 
 // global error handling
-app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
+app.use((err: HttpError, req: Request, res: Response) => {
     logger.error(err.message);
     const statusCode = err.statusCode || 500;
 

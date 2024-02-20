@@ -108,8 +108,8 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
     },
-    "include": [
-        "src/**/*.ts",
-        ".eslintrc.cjs", // Include the ESLint configuration file
-    ],
+    // "include": [
+    //     "src/**/*.ts",
+    //     ".eslintrc.cjs", // Include the ESLint configuration file
+    // ],
 }

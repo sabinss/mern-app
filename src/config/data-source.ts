@@ -3,7 +3,6 @@ import { DataSource } from 'typeorm';
 import { User } from '../entity/User';
 import { Config } from '.';
 
-console.log('config', Config);
 export const AppDataSource = new DataSource({
     type: 'postgres',
     host: Config.DB_HOST,
@@ -12,7 +11,8 @@ export const AppDataSource = new DataSource({
     password: Config.DB_PASSWORD,
     database: Config.DB_NAME,
     // dont use this in production
-    synchronize: Config.NODE_ENV === 'test' || Config.NODE_ENV === 'dev',
+    // synchronize: Config.NODE_ENV === 'test' || Config.NODE_ENV === 'dev',
+    synchronize: false,
     logging: false,
     entities: [User],
     migrations: [],
