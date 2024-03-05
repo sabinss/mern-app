@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import request from 'supertest';
 import app from '../../src/app';
 import { DataSource } from 'typeorm';
@@ -6,6 +8,7 @@ import { AppDataSource } from '../../src/config/data-source';
 // import { truncateTables } from '../utils';
 import { User } from '../../src/entity/User';
 import { Roles } from '../../src/constants';
+import { isJwt, truncateTables } from '../utils';
 
 describe('POST /auth/register', () => {
     let connection: DataSource;
@@ -33,7 +36,7 @@ describe('POST /auth/register', () => {
             const userData = {
                 firstName: 'Rakesh',
                 lastName: 'K',
-                email: 'rakesh@mern.space',
+                email: 'rakesh@merna.space',
                 password: 'password',
             };
             // Act;
@@ -56,7 +59,6 @@ describe('POST /auth/register', () => {
             const response = await request(app)
                 .post('/auth/register')
                 .send(userData);
-
             expect(
                 (response.headers as Record<string, string>)['content-type'],
             ).toEqual(expect.stringContaining('json'));
@@ -70,7 +72,7 @@ describe('POST /auth/register', () => {
                 email: 'rakesh@mern.space',
                 password: 'password',
             };
-
+            await request(app).post('/auth/register').send(userData);
             //assert
             const userRepository = connection.getRepository(User);
             const users = await userRepository.find();
@@ -161,5 +163,54 @@ describe('POST /auth/register', () => {
         expect(response.statusCode).toBe(400);
         expect(users).toHaveLength(1);
     });
-    describe('Sad path: Fields are missing', () => {});
+
+    it('should return the access token and refresh token inside a cookie', async () => {
+        // Arrange
+        const userData = {
+            firstName: 'Rakesh',
+            lastName: 'K',
+            email: 'rakesh@mern.space',
+            password: 'password',
+        };
+
+        // Act
+        const response = await request(app)
+            .post('/auth/register')
+            .send(userData);
+
+        let accessToken = null;
+        let refreshToken = null;
+
+        const cookies = response.headers['set-cookie'] || [];
+
+        // Type assertion to treat cookies as an array of strings
+        if (Array.isArray(cookies)) {
+            cookies.forEach((cookie: string) => {
+                // Assertion added here
+                if (cookie.startsWith('accessToken=')) {
+                    accessToken = cookie.split(';')[0].split('=')[1];
+                    // eslint-disable-next-line no-console
+                }
+
+                if (cookie.startsWith('refreshToken=')) {
+                    refreshToken = cookie.split(';')[0].split('=')[1];
+                }
+            });
+        } else {
+            // eslint-disable-next-line no-console
+            console.error('Cookies is not an array.');
+        }
+        // eslint-disable-next-line no-console
+        expect(accessToken).not.toBeNull();
+        expect(refreshToken).not.toBeNull();
+
+        expect(isJwt(accessToken)).toBeTruthy();
+        expect(isJwt(refreshToken)).toBeTruthy();
+    });
+
+    describe('Sad path: Fields are missing', () => {
+        it('test', () => {
+            expect(true).toBeTruthy();
+        });
+    });
 });
