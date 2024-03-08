@@ -10,10 +10,9 @@ export default checkSchema({
             errorMessage: 'Email should be a valid email',
         },
     },
-
     password: {
         trim: true,
-        errorMessage: 'Last name is required!',
+        errorMessage: 'Password is  required!',
         notEmpty: true,
     },
 });

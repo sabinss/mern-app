@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 
-import express, { Response, Request } from 'express';
+import express, { Response, Request, NextFunction } from 'express';
 import logger from './config/logger';
 import { HttpError } from 'http-errors';
 // import createError from 'http-errors';
@@ -23,9 +23,11 @@ app.get('/', async (req, res) => {
 app.use('/auth', authRouter);
 
 // global error handling
-app.use((err: HttpError, req: Request, res: Response) => {
+app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
     logger.error(err.message);
-    const statusCode = err.statusCode || 500;
+    console.log('global error', err);
+    const statusCode = err.statusCode || err.status || 500;
+    console.log('global statusCode', statusCode);
 
     res.status(statusCode).json({
         errors: [
@@ -33,7 +35,7 @@ app.use((err: HttpError, req: Request, res: Response) => {
                 type: err.name,
                 msg: err.message,
                 path: '',
-                lcation: '',
+                location: '',
             },
         ],
     });

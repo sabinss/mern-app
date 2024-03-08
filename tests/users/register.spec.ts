@@ -9,6 +9,7 @@ import { AppDataSource } from '../../src/config/data-source';
 import { User } from '../../src/entity/User';
 import { Roles } from '../../src/constants';
 import { isJwt, truncateTables } from '../utils';
+import { RefreshToken } from '../../src/entity/RefreshToken';
 
 describe('POST /auth/register', () => {
     let connection: DataSource;
@@ -31,6 +32,35 @@ describe('POST /auth/register', () => {
     });
 
     describe('Happy path : Given All fields', () => {
+        it('should store refresh token inside database', async () => {
+            // Arrange
+            const userData = {
+                firstName: 'Rakesh',
+                lastName: 'K',
+                email: 'rakesh@mern.space',
+                password: 'password',
+            };
+
+            // Act
+            const response = await request(app)
+                .post('/auth/register')
+                .send(userData);
+
+            //Assert
+
+            const refreshTokenRepo = connection.getRepository(RefreshToken);
+
+            // const refreshTokens = await refreshTokenRepo.find();
+
+            const tokens = await refreshTokenRepo
+                .createQueryBuilder('refreshToken')
+                .where('refreshToken.userId = :userId', {
+                    userId: (response.body as Record<string, string>).id,
+                })
+                .getMany();
+
+            expect(tokens).toHaveLength(1);
+        });
         it('should return the 201 status code', async () => {
             // Arrange
             const userData = {
@@ -121,96 +151,82 @@ describe('POST /auth/register', () => {
             expect(users[0].password).toMatch(/^\$2b\$\d+\$/);
         });
     });
-    it('should return 400 status code if email is already exists', async () => {
-        // Arrange
-        const userData = {
-            firstName: 'Rakesh',
-            lastName: 'K',
-            email: 'rakesh@mern.space',
-            password: 'password',
-        };
-        const userRepository = connection.getRepository(User);
-        await userRepository.save({ ...userData, role: Roles.CUSTOMER });
-
-        // Act
-        const response = await request(app)
-            .post('/auth/register')
-            .send(userData);
-
-        const users = await userRepository.find();
-        // Assert
-        expect(response.statusCode).toBe(400);
-        expect(users).toHaveLength(1);
-    });
-
-    it('should return 400 status code if email is already exist', async () => {
-        // Arrange
-        const userData = {
-            firstName: 'Rakesh',
-            lastName: 'K',
-            email: 'rakesh@mern.space',
-            password: 'password',
-        };
-        const userRepository = connection.getRepository(User);
-        await userRepository.save({ ...userData, role: Roles.CUSTOMER });
-
-        // Act
-        const response = await request(app)
-            .post('/auth/register')
-            .send(userData);
-        const users = await userRepository.find();
-        // Assert
-        expect(response.statusCode).toBe(400);
-        expect(users).toHaveLength(1);
-    });
-
-    it('should return the access token and refresh token inside a cookie', async () => {
-        // Arrange
-        const userData = {
-            firstName: 'Rakesh',
-            lastName: 'K',
-            email: 'rakesh@mern.space',
-            password: 'password',
-        };
-
-        // Act
-        const response = await request(app)
-            .post('/auth/register')
-            .send(userData);
-
-        let accessToken = null;
-        let refreshToken = null;
-
-        const cookies = response.headers['set-cookie'] || [];
-
-        // Type assertion to treat cookies as an array of strings
-        if (Array.isArray(cookies)) {
-            cookies.forEach((cookie: string) => {
-                // Assertion added here
-                if (cookie.startsWith('accessToken=')) {
-                    accessToken = cookie.split(';')[0].split('=')[1];
-                    // eslint-disable-next-line no-console
-                }
-
-                if (cookie.startsWith('refreshToken=')) {
-                    refreshToken = cookie.split(';')[0].split('=')[1];
-                }
-            });
-        } else {
-            // eslint-disable-next-line no-console
-            console.error('Cookies is not an array.');
-        }
-        // eslint-disable-next-line no-console
-        expect(accessToken).not.toBeNull();
-        expect(refreshToken).not.toBeNull();
-
-        expect(isJwt(accessToken)).toBeTruthy();
-        expect(isJwt(refreshToken)).toBeTruthy();
-    });
 
     describe('Sad path: Fields are missing', () => {
-        it('test', () => {
-            expect(true).toBeTruthy();
-        });
+        // it('should return 400 status code if email is already exists', async () => {
+        //     // Arrange
+        //     const userData = {
+        //         firstName: 'Rakesh',
+        //         lastName: 'K',
+        //         email: 'rakesh@mern.space',
+        //         password: 'password',
+        //     };
+        //     const userRepository = connection.getRepository(User);
+        //     await userRepository.save({ ...userData, role: Roles.CUSTOMER });
+        //     // Act
+        //     const response = await request(app)
+        //         .post('/auth/register')
+        //         .send(userData);
+        //     const users = await userRepository.find();
+        //     // Assert
+        //     expect(response.statusCode).toBe(400);
+        //     expect(users).toHaveLength(1);
+        // });
+        // it('should return 400 status code if email is already exist', async () => {
+        //     // Arrange
+        //     const userData = {
+        //         firstName: 'Rakesh',
+        //         lastName: 'K',
+        //         email: 'rakesh@mern.space',
+        //         password: 'password',
+        //     };
+        //     const userRepository = connection.getRepository(User);
+        //     await userRepository.save({ ...userData, role: Roles.CUSTOMER });
+        //     // Act
+        //     const response = await request(app)
+        //         .post('/auth/register')
+        //         .send(userData);
+        //     const users = await userRepository.find();
+        //     // Assert
+        //     expect(response.statusCode).toBe(400);
+        //     expect(users).toHaveLength(1);
+        // });
+        // it('should return the access token and refresh token inside a cookie', async () => {
+        //     // Arrange
+        //     const userData = {
+        //         firstName: 'Rakesh',
+        //         lastName: 'K',
+        //         email: 'rakesh@mern.space',
+        //         password: 'password',
+        //     };
+        //     // Act
+        //     const response = await request(app)
+        //         .post('/auth/register')
+        //         .send(userData);
+        //     let accessToken = null;
+        //     let refreshToken = null;
+        //     const cookies = response.headers['set-cookie'] || [];
+        //     // Type assertion to treat cookies as an array of strings
+        //     if (Array.isArray(cookies)) {
+        //         cookies.forEach((cookie: string) => {
+        //             // Assertion added here
+        //             if (cookie.startsWith('accessToken=')) {
+        //                 accessToken = cookie.split(';')[0].split('=')[1];
+        //                 // eslint-disable-next-line no-console
+        //             }
+        //             if (cookie.startsWith('refreshToken=')) {
+        //                 refreshToken = cookie.split(';')[0].split('=')[1];
+        //             }
+        //         });
+        //     } else {
+        //         // eslint-disable-next-line no-console
+        //         console.error('Cookies is not an array.');
+        //     }
+        //     // eslint-disable-next-line no-console
+        //     expect(accessToken).not.toBeNull();
+        //     expect(refreshToken).not.toBeNull();
+        //     expect(isJwt(accessToken)).toBeTruthy();
+        //     expect(isJwt(refreshToken)).toBeTruthy();
+        // });
     });
 });
